@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-	<title>Blank App</title>
+	<title>Duel App</title>
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -19,121 +19,64 @@
 	
 	<script type="text/javascript" src="cordova.js"></script>
 	<script type="text/javascript" src="js/vue.js"></script>
+	
+	<div class="container">
+		<div id="app">
+			
+			<br>
+			<br>
+			<br>
+			<div class="row">
+				<div class="col-xs-12 col-sm-6">
+					<div class="row text-center">
+						<div class="col-xs-12">
+							You		
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-offset-1 col-xs-10 ">
+							<div role="progressbar" class="progress-bar progress-bar-success text-center energy-1" :style="{width: lifeYou + '%'}">{{lifeYou}}</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-6">
+					<div class="row text-center">
+						<div class="col-xs-12">
+							Monster	
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-offset-1 col-xs-10 ">
+							<div role="progressbar" class="progress-bar progress-bar-success text-center energy-2" :style="{width: lifeMonster + '%'}">{{lifeMonster}}</div>
+						</div>
+					</div>
+				</div>
 
-	<div id="app">
-		{{ message }}
-		<div class="row">
-			<div class="col-xs-12 col-sm-6">
-				<div class="row text-center">
-					<div class="col-xs-12">
-						You		
+			</div>
+			<br>
+			<div class="row well">
+				<div class="col-xs-12 text-center">
+					<div v-if="show">
+						<button type="button" class="btn btn-success" @click="startGame()">Start game!</button>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-offset-1 col-xs-10 ">
-						<div role="progressbar" class="progress-bar progress-bar-success text-center energy-1" :style="{width: lifeYou + '%'}">{{lifeYou}}</div>
+					<div v-else>
+						<button type="button" class="btn btn-danger" @click="attack()">Attack</button>
+						<button type="button" class="btn btn-warning" @click="special()">Special Attack</button>
+						<button type="button" class="btn btn-info" @click="heal()">Heal</button>
+						<button type="button" class="btn btn-default" @click="giveUp()">Give Up</button>
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-12 col-sm-6">
-				<div class="row text-center">
-					<div class="col-xs-12">
-						Monster	
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-offset-1 col-xs-10 ">
-						<div role="progressbar" class="progress-bar progress-bar-success text-center energy-2" :style="{width: lifeMonster + '%'}">{{lifeMonster}}</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row well">
-			<div class="col-xs-12 text-center">
-				<div v-if="show">
-					<button type="button" class="btn btn-success" @click="startGame()">Start game!</button>
-				</div>
-				<div v-else>
-					<button type="button" class="btn btn-danger" @click="attack()">Attack</button>
-					<button type="button" class="btn btn-warning" @click="special()">Special Attack</button>
-					<button type="button" class="btn btn-info" @click="heal()">Heal</button>
-					<button type="button" class="btn btn-default" @click="giveUp()">Give Up</button>
-				</div>
-			</div>
-		</div>
 
-		<div class="row well">
-		<template v-for="log in logs">
-				<div class="alert text-center" role="alert" :class="log.class">
-					{{log.message}}
-				</div>
-			</template>
+			<div class="row well">
+				<template v-for="log in logs">
+					<div class="alert text-center" role="alert" :class="log.class">
+						{{log.message}}
+					</div>
+				</template>
+			</div>
 		</div>
 	</div>
-
-	<script>
-		var app = new Vue({
-			el: '#app',
-			data: {
-				message: 'Hello Vue!',
-				lifeYou: 100,
-				lifeMonster: 100,
-				show: true,
-				lifePoints: 0,
-				message: "",
-				logs:[]
-			},
-			methods: {
-				startGame: function() {
-					this.show = false;
-					this.lifeYou = 100;
-					this.lifeMonster = 100;
-					this.logs = [];
-				},
-				attack: function() {
-					monsterDamage = Math.floor((Math.random() * 10) + 1);
-					this.lifeYou -= monsterDamage;
-					this.logs.push({message:"Monster hits You for "+monsterDamage, class: "alert-danger"});
-					playerDamage = Math.floor((Math.random() * 10) + 1);
-					this.lifeMonster -= playerDamage;
-					this.logs.push({message:"You hit Monster for "+playerDamage, class: "alert-info"});
-					this.checkLifePoints();
-				},
-				heal: function() {
-					if (this.lifeYou < 100) {
-						this.lifeYou += 10;	
-					}
-					monsterDamage = Math.floor((Math.random() * 10) + 1);
-					this.lifeYou -= monsterDamage;
-					this.logs.push({message:"Monster hits You for "+monsterDamage, class: "alert-danger"});
-					this.logs.push({message:"You heal for 10", class: "alert-info"});
-					this.checkLifePoints();
-				},
-				special: function() {
-					monsterDamage = Math.floor((Math.random() * 10) + 1);
-					this.lifeYou -= monsterDamage;
-					playerDamage = Math.floor((Math.random() * 10) + 1) + 5;
-					this.lifeMonster -= playerDamage;
-					this.logs.push({message:"Monster hits You for "+monsterDamage, class: "alert-danger"});
-					this.logs.push({message:"You hit Monster for "+playerDamage, class: "alert-info"});					
-					this.checkLifePoints();
-				},
-				giveUp: function() {
-					alert("Te has rendido, Perdedor!");
-					this.show = !this.show;
-				},
-				checkLifePoints: function(){
-					if (this.lifeYou <= 0 ) {
-						alert("Has perdido!, Patetico");
-						this.show = !this.show;
-					};
-					if (this.lifeMonster <= 0 ) {
-						alert("Has Ganado, buena la rata!")
-						this.show = !this.show;
-					};
-				}
-			}
-		})
-	</script>
+	<script type="text/javascript" src="js/duel.js"></script>
 </body>
 </html>
